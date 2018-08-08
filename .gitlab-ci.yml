@@ -8,6 +8,8 @@ before_script:
   - go get -u github.com/JoshuaDoes/govvv
   - go get -u github.com/c-bata/go-prompt
   - go get -u github.com/mattn/go-tty
+  - go get -u github.com/mattn/go-colorable
+  - go get -u github.com/mattn/go-isatty
   - which govvv
 
 build:
