@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"runtime"
 	"sort"
 	"strconv"
@@ -72,6 +73,15 @@ func InitCommands() {
 		Function: exitCmd,
 		Args: []Arg{
 			{Name: "code", Type: "int", Desc: "optional code to exit with"},
+		},
+	}
+	Commands["exec"] = &Command{
+		Help:     "Execute a file",
+		Function: execCmd,
+		ReqArgs:  []string{"file"},
+		Args: []Arg{
+			{Name: "file", Type: "string", Desc: "Name of file/program to execute"},
+			{Name: "args", Type: "[]string", Desc: "arguments to pass"},
 		},
 	}
 }
@@ -187,4 +197,15 @@ func lsCmd(args []string) {
 	for _, f := range files {
 		fmt.Printf(" %s - %d bytes - dir: %t\n", f.Name(), f.Size(), f.IsDir())
 	}
+}
+
+func execCmd(args []string) {
+	cmd := exec.Command(args[0], args[1:len(args)]...)
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Env = os.Environ()
+	cmd.Start()
+	cmd.Wait()
+	return
 }
