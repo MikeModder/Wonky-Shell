@@ -31,6 +31,7 @@ func InitCommands() {
 	// Setup all the commands here
 	// No arguments commands
 	Commands["test"] = &Command{Help: "test", Function: testCmd}
+	Commands["version"] = &Command{Help: "Display program versopm", Function: versionCmd}
 
 	// 1+ argument commands
 	Commands["help"] = &Command{
@@ -81,7 +82,7 @@ func printCommandUsage(name string) {
 	return
 }
 
-func testCmd(args []string) {
+func testCmd(_ []string) {
 	fmt.Println("Test command ok!")
 }
 
@@ -122,5 +123,10 @@ func helpCmd(args []string) {
 		c := Commands[commandName]
 		fmt.Printf("%s - %s\n", commandName, c.Help)
 	}
+	return
+}
+
+func versionCmd(_ []string) {
+	fmt.Printf("%s v%s (git %s, built %s)\n", AppName, Version, GitCommit, BuildDate)
 	return
 }
