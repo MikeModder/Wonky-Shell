@@ -1,19 +1,14 @@
 image: golang:1.10.3
 stages:
-  - deps
   - build
 
 before_script:
   - mkdir -p /go/src/gitlab.com/MikeModder /go/src/_/builds
   - cp -r $CI_PROJECT_DIR /go/src/gitlab.com/MikeModder/Wonky-Shell
   - go get -u github.com/JoshuaDoes/govvv
+  - go get -u github.com/c-bata/go-prompt
+  - go get -u github.com/mattn/go-tty
   - which govvv
-
-install_dep:
-  stage: deps
-  script:
-    - go get -u github.com/c-bata/go-prompt
-    - go get -u github.com/mattn/go-tty
 
 build:
   stage: build
