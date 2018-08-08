@@ -36,6 +36,7 @@ func InitCommands() {
 	Commands["version"] = &Command{Help: "Display program versopm", Function: versionCmd}
 	Commands["os"] = &Command{Help: "Display host OS and arch", Function: osCmd}
 	Commands["pwd"] = &Command{Help: "Print current directory", Function: pwdCmd}
+	Commands["update"] = &Command{Help: "Check for updates", Function: updateCmd}
 
 	// 1+ argument commands
 	Commands["help"] = &Command{
@@ -207,5 +208,18 @@ func execCmd(args []string) {
 	cmd.Env = os.Environ()
 	cmd.Start()
 	cmd.Wait()
+	return
+}
+
+func updateCmd(_ []string) {
+	update, e, hash := CheckUpdate()
+	if e {
+		fmt.Println("Error while checking for update!")
+		return
+	}
+	if update {
+		fmt.Printf("Latest commit is %s while local is %s, there may be an update.\n", hash, GitCommit)
+	}
+	fmt.Println("It looks like you're all up-to-date!")
 	return
 }
