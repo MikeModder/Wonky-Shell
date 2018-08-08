@@ -219,6 +219,7 @@ func updateCmd(_ []string) {
 	}
 	if update {
 		fmt.Printf("Latest GitLab commit is %s while local is %s, there may be an update.\n", hash, GitCommit)
+		return
 	}
 	fmt.Println("It looks like you're all up-to-date!")
 	return
