@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -30,8 +32,9 @@ var Commands = make(map[string]*Command)
 func InitCommands() {
 	// Setup all the commands here
 	// No arguments commands
-	Commands["test"] = &Command{Help: "test", Function: testCmd}
 	Commands["version"] = &Command{Help: "Display program versopm", Function: versionCmd}
+	Commands["os"] = &Command{Help: "Display host OS and arch", Function: osCmd}
+	Commands["pwd"] = &Command{Help: "Print current directory", Function: pwdCmd}
 
 	// 1+ argument commands
 	Commands["help"] = &Command{
@@ -39,6 +42,21 @@ func InitCommands() {
 		Function: helpCmd,
 		Args: []Arg{
 			{Name: "command", Type: "string", Desc: "option command to show help for"},
+		},
+	}
+	Commands["cd"] = &Command{
+		Help:     "Change directory",
+		Function: cdCmd,
+		ReqArgs:  []string{"path"},
+		Args: []Arg{
+			{Name: "path", Type: "path", Desc: "Path to enter"},
+		},
+	}
+	Commands["ls"] = &Command{
+		Help:     "Show files/folders in a dir",
+		Function: lsCmd,
+		Args: []Arg{
+			{Name: "path", Type: "path", Desc: "Path to list contents of"},
 		},
 	}
 	Commands["echo"] = &Command{
@@ -80,10 +98,6 @@ func printCommandUsage(name string) {
 		fmt.Printf("  %s (%s) - %s\n", c.Args[i].Name, c.Args[i].Type, c.Args[i].Desc)
 	}
 	return
-}
-
-func testCmd(_ []string) {
-	fmt.Println("Test command ok!")
 }
 
 func exitCmd(args []string) {
@@ -129,4 +143,48 @@ func helpCmd(args []string) {
 func versionCmd(_ []string) {
 	fmt.Printf("%s v%s (git %s, built %s)\n", AppName, Version, GitCommit, BuildDate)
 	return
+}
+
+func osCmd(_ []string) {
+	fmt.Printf("You are using %s/%s\n", runtime.GOOS, runtime.GOARCH)
+	return
+}
+
+func pwdCmd(_ []string) {
+	dir, e := os.Getwd()
+	if e != nil {
+		fmt.Printf("Error getting working directory: %s\n", e.Error())
+		return
+	}
+	fmt.Printf("Current directory: %s\n", dir)
+	return
+}
+
+func cdCmd(args []string) {
+	if len(args) >= 1 {
+		dir := args[0]
+		e := os.Chdir(dir)
+		if e != nil {
+			fmt.Printf("Error changing dir to %s, error: %s\n", dir, e.Error())
+			return
+		}
+		fmt.Printf("Changed directory to %s\n", dir)
+		return
+	}
+}
+
+func lsCmd(args []string) {
+	dir := "./"
+	if len(args) >= 1 {
+		dir = args[0]
+	}
+	files, e := ioutil.ReadDir(dir)
+	if e != nil {
+		fmt.Printf("Error getting directory list for %s, error: %s\n", dir, e.Error())
+		return
+	}
+	fmt.Printf("Contents of %s:\n", dir)
+	for _, f := range files {
+		fmt.Printf(" %s - %d bytes - dir: %t\n", f.Name(), f.Size(), f.IsDir())
+	}
 }
