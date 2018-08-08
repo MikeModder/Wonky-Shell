@@ -18,8 +18,8 @@ install_dep:
 build:
   stage: build
   artifacts:
-  paths:
-    - out/
+      paths:
+        - out/
   script:
     - rm -rf out/
     - mkdir out
