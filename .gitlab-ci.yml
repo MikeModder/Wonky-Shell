@@ -3,10 +3,6 @@ stages:
   - deps
   - build
 
-artifacts:
-  paths:
-    - out/
-
 before_script:
   - mkdir -p /go/src/gitlab.com/MikeModder /go/src/_/builds
   - cp -r $CI_PROJECT_DIR /go/src/gitlab.com/MikeModder/Wonky-Shell
@@ -21,6 +17,9 @@ install_dep:
 
 build:
   stage: build
+  artifacts:
+  paths:
+    - out/
   script:
     - rm -rf out/
     - mkdir out
