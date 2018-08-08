@@ -1,0 +1,31 @@
+image: golang:1.10.3
+stages:
+  - deps
+  - build
+
+artifacts:
+  paths:
+    - out/
+
+before_script:
+  - mkdir -p /go/src/gitlab.com/MikeModder /go/src/_/builds
+  - cp -r $CI_PROJECT_DIR /go/src/gitlab.com/MikeModder/Wonky-Shell
+  - go get -u github.com/JoshuaDoes/govvv
+  - which govvv
+
+install_dep:
+  stage: deps
+  script:
+    - go get -u github.com/c-bata/go-prompt
+    - go get -u github.com/mattn/go-tty
+
+build:
+  stage: build
+  script:
+    - rm -rf out/
+    - mkdir out
+    - GOOS=windows GOARCH=amd64 govvv build -o out/Wonky-Shell-win32.exe
+    - GOOS=windows GOARCH=386   govvv build -o out/Wonky-Shell-win64.exe
+    - GOOS=darwin  GOARCH=amd64 govvv build -o out/Wonky-Shell-mac64
+    - GOOS=linux   GOARCH=amd64 govvv build -o out/Wonky-Shell-lin64
+    - GOOS=linux   GOARCH=386   govvv build -o out/Wonky-Shell-lin32
