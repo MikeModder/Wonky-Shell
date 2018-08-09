@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
@@ -11,10 +13,14 @@ import (
 	"strings"
 )
 
+var (
+	history []RanCmd
+)
+
 // Command command
 type Command struct {
 	Help     string
-	Function func([]string)
+	Function func([]string) int
 	Args     []Arg
 	ReqArgs  []string
 }
@@ -24,6 +30,13 @@ type Arg struct {
 	Name string
 	Type string
 	Desc string
+}
+
+// RanCmd Ran command
+type RanCmd struct {
+	Name string
+	Args []string
+	Code int
 }
 
 // Commands map of commands
@@ -37,6 +50,8 @@ func InitCommands() {
 	Commands["os"] = &Command{Help: "Display host OS and arch", Function: osCmd}
 	Commands["pwd"] = &Command{Help: "Print current directory", Function: pwdCmd}
 	Commands["update"] = &Command{Help: "Check for updates", Function: updateCmd}
+	Commands["last"] = &Command{Help: "Check return code of last run command", Function: lastRanCmd}
+	Commands["history"] = &Command{Help: "Get command history for this session", Function: historyCmd}
 
 	// 1+ argument commands
 	Commands["help"] = &Command{
@@ -85,13 +100,26 @@ func InitCommands() {
 			{Name: "args", Type: "[]string", Desc: "arguments to pass"},
 		},
 	}
+	Commands["download"] = &Command{
+		Help:     "Download a file",
+		Function: downloadCmd,
+		ReqArgs:  []string{"url", "filename"},
+		Args: []Arg{
+			{Name: "url", Type: "url", Desc: "URL of file to download"},
+			{Name: "filename", Type: "string", Desc: "Optional name of saved file"},
+		},
+	}
 }
 
 // CallCommand call a command
 func CallCommand(name string, args []string) {
 	if c, exist := Commands[name]; exist {
 		if len(args) >= len(c.ReqArgs) {
-			c.Function(args)
+			code := c.Function(args)
+			if len(args) == 0 {
+				args = []string{"N/A"}
+			}
+			history = append(history, RanCmd{Name: name, Code: code, Args: args})
 			return
 		}
 		fmt.Printf("Not enough parameters for %s: %d required, %d passed\n", name, len(c.ReqArgs), len(args))
@@ -111,7 +139,7 @@ func printCommandUsage(name string) {
 	return
 }
 
-func exitCmd(args []string) {
+func exitCmd(args []string) int {
 	var e error
 	code := 0
 	if len(args) > 0 {
@@ -123,21 +151,23 @@ func exitCmd(args []string) {
 	}
 	fmt.Printf("Exiting with code %d, bye!\n", code)
 	os.Exit(code)
+	return 2
 }
 
-func echoCmd(args []string) {
+func echoCmd(args []string) int {
 	fmt.Println(strings.Join(args, " "))
+	return 0
 }
 
-func helpCmd(args []string) {
+func helpCmd(args []string) int {
 	if len(args) >= 1 {
 		cmd := args[0]
 		if _, exist := Commands[cmd]; exist {
 			printCommandUsage(cmd)
-			return
+			return 0
 		}
 		fmt.Printf("Connot get help for non existant command (%s)\n", cmd)
-		return
+		return 1
 	}
 	var commandNames []string
 	for cKey := range Commands {
@@ -148,47 +178,48 @@ func helpCmd(args []string) {
 		c := Commands[commandName]
 		fmt.Printf("%s - %s\n", commandName, c.Help)
 	}
-	return
+	return 0
 }
 
-func versionCmd(_ []string) {
+func versionCmd(_ []string) int {
 	fmt.Printf("About %s:\n", AppName)
 	fmt.Printf(" Version %s\n", Version)
 	fmt.Printf(" Branch %s, Commit %s\n", GitBranch, GitCommit)
 	fmt.Printf(" Built %s\n", BuildDate)
 	fmt.Printf("%s is a mini shell program.\n(c) MikeModder 2018-present\n", AppName)
-	return
+	return 0
 }
 
-func osCmd(_ []string) {
+func osCmd(_ []string) int {
 	fmt.Printf("You are using %s/%s\n", runtime.GOOS, runtime.GOARCH)
-	return
+	return 0
 }
 
-func pwdCmd(_ []string) {
+func pwdCmd(_ []string) int {
 	dir, e := os.Getwd()
 	if e != nil {
 		fmt.Printf("Error getting working directory: %s\n", e.Error())
-		return
+		return 1
 	}
 	fmt.Printf("Current directory: %s\n", dir)
-	return
+	return 0
 }
 
-func cdCmd(args []string) {
+func cdCmd(args []string) int {
 	if len(args) >= 1 {
 		dir := args[0]
 		e := os.Chdir(dir)
 		if e != nil {
 			fmt.Printf("Error changing dir to %s, error: %s\n", dir, e.Error())
-			return
+			return 1
 		}
 		fmt.Printf("Changed directory to %s\n", dir)
-		return
+		return 0
 	}
+	return 0
 }
 
-func lsCmd(args []string) {
+func lsCmd(args []string) int {
 	dir := "./"
 	if len(args) >= 1 {
 		dir = args[0]
@@ -196,15 +227,16 @@ func lsCmd(args []string) {
 	files, e := ioutil.ReadDir(dir)
 	if e != nil {
 		fmt.Printf("Error getting directory list for %s, error: %s\n", dir, e.Error())
-		return
+		return 1
 	}
 	fmt.Printf("Contents of %s:\n", dir)
 	for _, f := range files {
 		fmt.Printf(" %s - %d bytes - dir: %t\n", f.Name(), f.Size(), f.IsDir())
 	}
+	return 0
 }
 
-func execCmd(args []string) {
+func execCmd(args []string) int {
 	cmd := exec.Command(args[0], args[1:len(args)]...)
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
@@ -212,19 +244,74 @@ func execCmd(args []string) {
 	cmd.Env = os.Environ()
 	cmd.Start()
 	cmd.Wait()
-	return
+	return 0
 }
 
-func updateCmd(_ []string) {
+func updateCmd(_ []string) int {
 	update, e, hash := CheckUpdate()
 	if e {
 		fmt.Println("Error while checking for update!")
-		return
+		return 1
 	}
 	if update {
 		fmt.Printf("Latest GitLab commit is %s while local is %s, there may be an update.\n", hash, GitCommit)
-		return
+		return 0
 	}
 	fmt.Println("It looks like you're all up-to-date!")
-	return
+	return 0
+}
+
+func downloadCmd(args []string) int {
+	url := args[0]
+	filename := args[1]
+
+	file, e := os.Create(filename)
+	if e != nil {
+		fmt.Printf("Error creating %s for download! Error: %s\n", filename, e.Error())
+		return 1
+	}
+
+	resp, e := http.Get(url)
+	if e != nil {
+		fmt.Printf("Error downloading %s! Error: %s\n", url, e.Error())
+		return 1
+	}
+	defer resp.Body.Close()
+
+	_, e = io.Copy(file, resp.Body)
+	if e != nil {
+		fmt.Printf("Error writing file! Error: %s\n", e.Error())
+		return 1
+	}
+	e = file.Close()
+	if e != nil {
+		fmt.Printf("Error closing file! Error: %s\n", e.Error())
+		return 1
+	}
+	return 0
+}
+
+func lastRanCmd(_ []string) int {
+	last := history[len(history)-1]
+	fmt.Printf("Last ran command (%s) returned with code %d\n", last.Name, last.Code)
+	return 0
+}
+
+func historyCmd(args []string) int {
+	if len(args) >= 1 {
+		if args[0] == "clear" {
+			history = make([]RanCmd, 0)
+			fmt.Println("Cleared command history!")
+			return 0
+		}
+	}
+	fmt.Println("Command history since begining of session:\nTIP: Use `history clear` to clear!\n| name | args | returned |")
+	if len(history) == 0 {
+		fmt.Println("No commands ran yet!")
+		return 0
+	}
+	for _, item := range history {
+		fmt.Printf("| %s | %s | %d |\n", item.Name, strings.Join(item.Args, " "), item.Code)
+	}
+	return 0
 }
