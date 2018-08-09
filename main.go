@@ -7,15 +7,21 @@ import (
 	"github.com/c-bata/go-prompt"
 )
 
-var Version, GitCommit, BuildDate string
-var AppName = "HaxShell"
+var Version, GitCommit, GitBranch, BuildDate string
+
+const (
+	// AppName app's name
+	AppName = "HaxShell"
+	// PromptText text to use for promt
+	PromptText = "hax> "
+)
 
 func main() {
 	fmt.Printf("%s v%s-%s (built %s)\n", AppName, Version, GitCommit, BuildDate)
-	fmt.Printf("Setting up...\n")
+	fmt.Printf("%s - (c) MikeModder\n", AppName)
 	InitCommands()
 	p := prompt.New(executor, completer,
-		prompt.OptionPrefix("hax> "),
+		prompt.OptionPrefix(PromptText),
 		prompt.OptionTitle(fmt.Sprintf("%s v%s-%s (built %s)", AppName, Version, GitCommit, BuildDate)))
 	p.Run()
 }
