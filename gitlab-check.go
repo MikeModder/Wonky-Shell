@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-const glUrl = "https://gitlab.com/api/v4/projects/7808366/repository/commits"
+const glURL = "https://gitlab.com/api/v4/projects/7808366/repository/commits"
 
 // GLResp GitLab commits response
 type GLResp struct {
@@ -29,8 +29,9 @@ type GLCommit struct {
 	ParentIds      []string `json:"parent_ids"`
 }
 
+// CheckUpdate Poll GitLab about the latest commit
 func CheckUpdate() (bool, bool, string) {
-	glGET, e := http.Get(glUrl)
+	glGET, e := http.Get(glURL)
 	if e != nil {
 		fmt.Println("Error while contacting GitLab API!")
 		return false, true, ""
