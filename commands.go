@@ -33,7 +33,7 @@ var Commands = make(map[string]*Command)
 func InitCommands() {
 	// Setup all the commands here
 	// No arguments commands
-	Commands["version"] = &Command{Help: "Display program versopm", Function: versionCmd}
+	Commands["about"] = &Command{Help: "Display program information", Function: versionCmd}
 	Commands["os"] = &Command{Help: "Display host OS and arch", Function: osCmd}
 	Commands["pwd"] = &Command{Help: "Print current directory", Function: pwdCmd}
 	Commands["update"] = &Command{Help: "Check for updates", Function: updateCmd}
@@ -152,7 +152,11 @@ func helpCmd(args []string) {
 }
 
 func versionCmd(_ []string) {
-	fmt.Printf("%s v%s (git %s, built %s)\n", AppName, Version, GitCommit, BuildDate)
+	fmt.Printf("About %s:\n", AppName)
+	fmt.Printf(" Version %s\n", Version)
+	fmt.Printf(" Branch %s, Commit %s\n", GitBranch, GitCommit)
+	fmt.Printf(" Built %s\n", BuildDate)
+	fmt.Printf("%s is a mini shell program.\n(c) MikeModder 2018-present\n", AppName)
 	return
 }
 
