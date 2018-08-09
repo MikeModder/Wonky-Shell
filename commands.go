@@ -288,6 +288,7 @@ func downloadCmd(args []string) int {
 		fmt.Printf("Error closing file! Error: %s\n", e.Error())
 		return 1
 	}
+	fmt.Printf("Downloaded %s successfully!\n", filename)
 	return 0
 }
 
