@@ -5,13 +5,11 @@ Idk tbh, it's a shell kinda thing
 Learning
 
 # Commands
-`as of Aug 7, 2018`
-```
-exit <code>
-echo <text>
-whoami
-exist <path>
-os
-version
-help
-```
+Run `help` in the shell for a list of commands
+
+# Building
+### What you need:
+`go`, [govvv](https://github.com/JoshuaDoes/govvv), and [go-prompt](https://github.com/c-bata/go-prompt)
+
+### Do the build
+`cd` to the source and run `govvv build`.
