@@ -1,3 +1,11 @@
+# ensure go-prompt and govvv are installed
+echo Installing govv...
+go get -u github.com/JoshuaDoes/govvv
+echo now go-prompt and deps...
+go get -u github.com/c-bata/go-prompt
+go get -u github.com/mattn/go-tty
+go get -u github.com/mattn/go-colorable
+
 rm -rf out
 mkdir out
 echo win32
