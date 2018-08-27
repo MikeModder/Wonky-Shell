@@ -186,6 +186,7 @@ func versionCmd(_ []string) int {
 	fmt.Printf(" Version %s\n", Version)
 	fmt.Printf(" Branch %s, Commit %s\n", GitBranch, GitCommit)
 	fmt.Printf(" Built %s\n", BuildDate)
+	fmt.Printf(" Go runtime: %s\n", runtime.Version())
 	fmt.Printf("%s is a mini shell program.\n(c) MikeModder 2018-present\n", AppName)
 	return 0
 }
