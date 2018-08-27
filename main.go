@@ -33,6 +33,6 @@ func executor(in string) {
 	CallCommand(cmd, args)
 }
 
-func completer(in prompt.Document) []prompt.Suggest {
+func completer(_ prompt.Document) []prompt.Suggest {
 	return []prompt.Suggest{}
 }
