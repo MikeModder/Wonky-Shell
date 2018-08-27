@@ -1,5 +1,17 @@
 package main
 
+/* I must give credit where credit is due:
+ * a big thanks goes out to JoshuaDoes
+ * (https://github.com/JoshuaDoes) and
+ * his Discord bot Clinet for providing
+ * me with the inspiration for the command
+ * system being used here.
+ *
+ * Files used as refrence:
+ * https://github.com/JoshuaDoes/clinet-discord/blob/master/commands.go
+ * https://github.com/JoshuaDoes/clinet-discord/blob/master/cmd-moderation.go
+ */
+
 import (
 	"fmt"
 	"io"
