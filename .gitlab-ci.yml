@@ -10,6 +10,7 @@ before_script:
   - go get -u github.com/mattn/go-tty
   - go get -u github.com/mattn/go-colorable
   - go get -u github.com/mattn/go-isatty
+  - go get -u github.com/logrusorgru/aurora
   - which govvv
 
 build:
@@ -23,5 +24,5 @@ build:
     - GOOS=windows GOARCH=amd64 govvv build -o out/Wonky-Shell-win32.exe
     - GOOS=windows GOARCH=386   govvv build -o out/Wonky-Shell-win64.exe
     - GOOS=darwin  GOARCH=amd64 govvv build -o out/Wonky-Shell-mac64
-    - GOOS=linux   GOARCH=amd64 govvv build -o out/Wonky-Shell-lin64
-    - GOOS=linux   GOARCH=386   govvv build -o out/Wonky-Shell-lin32
+    - GOOS=linux   GOARCH=amd64 govvv build -o out/Wonky-Shell-linux64
+    - GOOS=linux   GOARCH=386   govvv build -o out/Wonky-Shell-linux32
