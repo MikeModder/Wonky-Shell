@@ -24,7 +24,7 @@ import (
 	"strconv"
 	"strings"
 
-	. "github.com/logrusorgru/aurora"
+	"github.com/logrusorgru/aurora"
 )
 
 var (
@@ -136,17 +136,17 @@ func CallCommand(name string, args []string) {
 			history = append(history, RanCmd{Name: name, Code: code, Args: args})
 			return
 		}
-		fmt.Printf("Not enough parameters for %s: %d required, %d passed\n", Bold(name), Bold(len(c.ReqArgs)), Bold(len(args)))
+		fmt.Printf("Not enough parameters for %s: %d required, %d passed\n", aurora.Bold(name), aurora.Bold(len(c.ReqArgs)), aurora.Bold(len(args)))
 		printCommandUsage(name)
 		return
 	}
-	fmt.Printf("%s is not a recognized command!\n", Bold(name))
+	fmt.Printf("%s is not a recognized command!\n", aurora.Bold(name))
 	return
 }
 
 func printCommandUsage(name string) {
 	c := Commands[name]
-	fmt.Printf("Usage for %s:\n %s %s\n  Parameters:\n", Bold(name), name, strings.Join(c.ReqArgs, " "))
+	fmt.Printf("Usage for %s:\n %s %s\n  Parameters:\n", aurora.Bold(name), name, strings.Join(c.ReqArgs, " "))
 	for i := 0; i < len(c.Args); i++ {
 		fmt.Printf("  %s (%s) - %s\n", c.Args[i].Name, c.Args[i].Type, c.Args[i].Desc)
 	}
@@ -160,10 +160,10 @@ func exitCmd(args []string) int {
 		code, e = strconv.Atoi(args[0])
 		if e != nil {
 			code = 0
-			fmt.Printf("%s is not a valid exit code, exiting with %d\n", args[0], Cyan(code))
+			fmt.Printf("%s is not a valid exit code, exiting with %d\n", args[0], aurora.Cyan(code))
 		}
 	}
-	fmt.Printf("Exiting with code %d, bye!\n", Cyan(code))
+	fmt.Printf("Exiting with code %d, bye!\n", aurora.Cyan(code))
 	os.Exit(code)
 	return 2
 }
@@ -180,7 +180,7 @@ func helpCmd(args []string) int {
 			printCommandUsage(cmd)
 			return 0
 		}
-		fmt.Printf("Connot get help for non existant command (%s)\n", Gray(cmd))
+		fmt.Printf("Connot get help for non existant command (%s)\n", aurora.Gray(cmd))
 		return 1
 	}
 	var commandNames []string
@@ -196,12 +196,12 @@ func helpCmd(args []string) int {
 }
 
 func versionCmd(_ []string) int {
-	fmt.Printf("About %s:\n", Green(AppName))
+	fmt.Printf("About %s:\n", aurora.Green(AppName))
 	fmt.Printf(" Version %s\n", Version)
 	fmt.Printf(" Branch %s, Commit %s\n", GitBranch, GitCommit)
 	fmt.Printf(" Built %s\n", BuildDate)
 	fmt.Printf(" Go runtime: %s\n", runtime.Version())
-	fmt.Printf("\n(c) MikeModder 2018-present\nSpecial thanks to %s\n", Cyan("JoshuaDoes"))
+	fmt.Printf("\n(c) MikeModder 2018-present\nSpecial thanks to %s\n", aurora.Cyan("JoshuaDoes"))
 	return 0
 }
 

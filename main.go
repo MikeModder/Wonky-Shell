@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/c-bata/go-prompt"
-	. "github.com/logrusorgru/aurora"
+	"github.com/logrusorgru/aurora"
 )
 
 var Version, GitCommit, GitBranch, BuildDate string
@@ -18,8 +18,8 @@ const (
 )
 
 func main() {
-	fmt.Printf("%s v%s-%s (built %s)\n", Green(AppName), Version, GitCommit, BuildDate)
-	fmt.Printf("Type %s for a list of commands!\n", Bold("help"))
+	fmt.Printf("%s v%s-%s (built %s)\n", aurora.Green(AppName), Version, GitCommit, BuildDate)
+	fmt.Printf("Type %s for a list of commands!\n", aurora.Bold("help"))
 	InitCommands()
 	p := prompt.New(executor, completer,
 		prompt.OptionPrefix(PromptText),
