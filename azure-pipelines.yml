@@ -28,6 +28,7 @@ steps:
     go get -u github.com/c-bata/go-prompt
     go get -u github.com/mattn/go-tty
     go get -u github.com/mattn/go-colorable
+    go get -u github.com/logrusorgru/aurora
     echo win32
     GOOS=windows GOARCH=amd64 govvv build -o out/Wonky-Shell-win32.exe
     echo win64
