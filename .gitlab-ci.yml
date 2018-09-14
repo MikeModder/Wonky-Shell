@@ -6,11 +6,6 @@ before_script:
   - mkdir -p /go/src/gitlab.com/MikeModder /go/src/_/builds
   - cp -r $CI_PROJECT_DIR /go/src/gitlab.com/MikeModder/Wonky-Shell
   - go get -u github.com/JoshuaDoes/govvv
-  - go get -u github.com/c-bata/go-prompt
-  - go get -u github.com/mattn/go-tty
-  - go get -u github.com/mattn/go-colorable
-  - go get -u github.com/mattn/go-isatty
-  - go get -u github.com/logrusorgru/aurora
   - which govvv
 
 build:
