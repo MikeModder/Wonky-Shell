@@ -9,7 +9,7 @@ Run `help` in the shell for a list of commands
 
 # Building
 ### What you need:
-`go`, [govvv](https://github.com/JoshuaDoes/govvv), and [go-prompt](https://github.com/c-bata/go-prompt)
+`go` (Go1.11+, or some way to use Go modules) and [govvv](https://github.com/JoshuaDoes/govvv)
 
 ### Do the build
 `cd` to the source and run `govvv build`.
