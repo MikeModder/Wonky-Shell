@@ -1,6 +1,8 @@
 language: go
 go:
 - '1.11'
+env:
+  - GO111MODULE=on
 before_deploy:
 - git config --local user.name "MikeModder"
 - git config --local user.email "oddman56@protonmail.com"
