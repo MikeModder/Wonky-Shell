@@ -1,3 +1,6 @@
+# Wonky Shell
+It's a shell thing that'll build sometimes: [![Build Status](https://travis-ci.org/MikeModder/Wonky-Shell.svg?branch=master)](https://travis-ci.org/MikeModder/Wonky-Shell)
+
 # What?
 Idk tbh, it's a shell kinda thing
 
