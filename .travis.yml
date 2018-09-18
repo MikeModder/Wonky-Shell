@@ -1,0 +1,21 @@
+language: go
+go:
+- '1.11'
+before_deploy:
+- git config --local user.name "MikeModder"
+- git config --local user.email "oddman56@protonmail.com"
+- git tag "auto-$(git rev-parse --short HEAD)"
+deploy:
+  provider: releases
+  api_key:
+    secure: Y3su5yAQiywgXPAkOMR435I4o+IoiKWIVZXkqPD3Z/L/wSuEsOP8ZUOTM7DiRbz5EKYXflchA+dX2hfMopv4JkQVPNh5lkSf/yYBxI9YeDoTsq9DEY1E6irzONV8bl4/kC6TBwzNDbCRWXaarcNkVkBJMA/W8f7+LW/CBSf+ElwXsEs5aBbW6XllI9jUwSytvCafG3/vAr8jFk5HDGhGTX8UEcGxFNaZTKAxDJspf3Thow7KfAbUWp4C0FekNZ1M+ErJM1WQO+9xOo+ac89cEiex/Z7XaALwloA1dLKbcJQDbP1bODEcQw+KvHHOKnX+xp6+Do5JpOxa03z/V6epCZAeGTfKnSrQV6jXNKzoEMlMqKBkPmp7L/fzK0/dhIISWPyFLjJVzSs9fskFk3Q6VrNo0I8qDBpPn2VDSe3+RRwWEJVSWz8b/JmxrIcFAK1v5AOUagcbwlkOhIEYjLJvxiAkfgysuLHs82rbRJ1SNzE/vMVN81oxoCv4hAAUsxCw23NinxdXGrpsBDLYEL38XkMWy4UbzQxDTEI7xrdRRN1Pr1ejU4LTKz77wj8xSXrK3dlnQfzRAFPTdTOGtcufzxFvhTvuxBTRsyKMEV6U499HPGObsi5QrAM/u5IRx6adZ45ryLA5iqA0FsJr/hUxOe6igfoPmFsVy3WNpSS3sEA=
+  file_glob: true
+  file: out/*
+  skip_cleanup: true
+  on:
+    repo: MikeModder/Wonky-Shell
+install:
+- go get github.com/JoshuaDoes/govvv
+- which govvv
+- mkdir out/
+script: "./build.sh"
