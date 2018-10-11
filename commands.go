@@ -63,7 +63,7 @@ func InitCommands() {
 	Commands["about"] = &Command{Help: "Display program information", Function: versionCmd}
 	Commands["os"] = &Command{Help: "Display host OS and arch", Function: osCmd}
 	Commands["pwd"] = &Command{Help: "Print current directory", Function: pwdCmd}
-	Commands["update"] = &Command{Help: "Check for updates", Function: updateCmd}
+	//Commands["update"] = &Command{Help: "Check for updates", Function: updateCmd}
 	Commands["last"] = &Command{Help: "Check return code of last run command", Function: lastRanCmd}
 	Commands["history"] = &Command{Help: "Get command history for this session", Function: historyCmd}
 
@@ -259,20 +259,6 @@ func execCmd(args []string) int {
 	cmd.Env = os.Environ()
 	cmd.Start()
 	cmd.Wait()
-	return 0
-}
-
-func updateCmd(_ []string) int {
-	update, e, hash := CheckUpdate()
-	if e {
-		fmt.Println("Error while checking for update!")
-		return 1
-	}
-	if update {
-		fmt.Printf("Latest GitLab commit is %s while local is %s, there may be an update.\n", hash, GitCommit)
-		return 0
-	}
-	fmt.Println("It looks like you're all up-to-date!")
 	return 0
 }
 
