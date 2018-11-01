@@ -4,6 +4,7 @@ go:
 env:
   - GO111MODULE=on
 before_deploy:
+- upx out/*
 - git config --local user.name "MikeModder"
 - git config --local user.email "oddman56@protonmail.com"
 - git tag "auto-$(git rev-parse --short HEAD)"
@@ -16,6 +17,9 @@ deploy:
   skip_cleanup: true
   on:
     repo: MikeModder/Wonky-Shell
+before_install:
+- sudo apt update
+- sudo apt install -y upx
 install:
 - go get github.com/JoshuaDoes/govvv
 - which govvv
