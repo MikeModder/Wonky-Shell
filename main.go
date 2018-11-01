@@ -8,7 +8,18 @@ import (
 	"github.com/logrusorgru/aurora"
 )
 
-var Version, GitCommit, GitBranch, BuildDate string
+var (
+	//Version Contents of ./VERSION
+	Version string
+	//GitBranch Current Git branch
+	GitBranch string
+	//GitCommit Current Git commit
+	GitCommit string
+	//BuildDate Build date
+	BuildDate string
+	//GitState State of the local repo
+	GitState string
+)
 
 const (
 	// AppName app's name
