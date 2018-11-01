@@ -7,7 +7,7 @@ before_deploy:
 - upx out/*
 - git config --local user.name "MikeModder"
 - git config --local user.email "oddman56@protonmail.com"
-- git tag "auto-$(git rev-parse --short HEAD)"
+- git tag "$(cat VERSION)-$(git rev-parse --short HEAD)"
 deploy:
   provider: releases
   api_key:
@@ -17,10 +17,12 @@ deploy:
   skip_cleanup: true
   on:
     repo: MikeModder/Wonky-Shell
+    branch: master
 before_install:
 - sudo apt update
 - sudo apt install -y upx
 install:
+- git fetch --unshallow --tags
 - go get github.com/JoshuaDoes/govvv
 - which govvv
 - mkdir out/
