@@ -63,7 +63,7 @@ func InitCommands() {
 	Commands["about"] = &Command{Help: "Display program information", Function: versionCmd}
 	Commands["os"] = &Command{Help: "Display host OS and arch", Function: osCmd}
 	Commands["pwd"] = &Command{Help: "Print current directory", Function: pwdCmd}
-	//Commands["update"] = &Command{Help: "Check for updates", Function: updateCmd}
+	Commands["debug"] = &Command{Help: "Print out some debug info", Function: debugCmd}
 	Commands["last"] = &Command{Help: "Check return code of last run command", Function: lastRanCmd}
 	Commands["history"] = &Command{Help: "Get command history for this session", Function: historyCmd}
 
@@ -208,6 +208,18 @@ func versionCmd(_ []string) int {
 
 func osCmd(_ []string) int {
 	fmt.Printf("You are using %s/%s\n", runtime.GOOS, runtime.GOARCH)
+	return 0
+}
+
+func debugCmd(_ []string) int {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+
+	fmt.Printf("Debug info (useful for reporting bugs):\n")
+	fmt.Printf("Host: %s/%s\n", runtime.GOOS, runtime.GOARCH)
+	fmt.Printf("Build ID: %s-%s-%s-%s (built %s)\n", GitState, GitBranch, Version, GitCommit, BuildDate)
+	fmt.Printf("Go runtime: %s, NumGoroutine: %d\n", runtime.Version(), runtime.NumGoroutine())
+	fmt.Printf("Memory:\n Alloc: %vMiB\n TotalAlloc: %vMiB\n Sys: %vMiB\n", m.Alloc/1024/1024, m.TotalAlloc/1024/1024, m.Sys/1024/1024)
 	return 0
 }
 
