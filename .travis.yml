@@ -22,7 +22,6 @@ before_install:
 - sudo apt update
 - sudo apt install -y upx
 install:
-- git fetch --unshallow --tags
 - go get github.com/JoshuaDoes/govvv
 - which govvv
 - mkdir out/
