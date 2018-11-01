@@ -197,11 +197,12 @@ func helpCmd(args []string) int {
 
 func versionCmd(_ []string) int {
 	fmt.Printf("About %s:\n", aurora.Green(AppName))
-	fmt.Printf(" Version %s\n", Version)
-	fmt.Printf(" Branch %s, Commit %s\n", GitBranch, GitCommit)
+	fmt.Printf(" Version %s (%s)\n", Version, GitCommit)
 	fmt.Printf(" Built %s\n", BuildDate)
 	fmt.Printf(" Go runtime: %s\n", runtime.Version())
-	fmt.Printf("\n(c) MikeModder 2018-present\nSpecial thanks to %s\n", aurora.Cyan("JoshuaDoes"))
+	fmt.Printf(" Build ID: %s-%s-%s-%s\n", GitState, GitBranch, Version, GitCommit)
+	fmt.Printf("Report bugs at:\n https://github.com/MikeModder/Wonky-Shell/issues\n When reporting bugs, make sure to include\n the build ID shown above!\n")
+	fmt.Printf("(c) MikeModder 2018-present\nSpecial thanks to %s\n", aurora.Cyan("JoshuaDoes"))
 	return 0
 }
 
