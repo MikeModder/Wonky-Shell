@@ -1,4 +1,2 @@
-github.com/gorilla/mux v1.6.3-0.20180903154305-9e1f5955c0d2 h1:ek3yoAtChzppNI3BIfa8tOaNUmWhxsqUHk6hxJFg0TM=
-github.com/gorilla/mux v1.6.3-0.20180903154305-9e1f5955c0d2/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
 github.com/logrusorgru/aurora v0.0.0-20180419164547-d694e6f975a9 h1:KQdwUNlTDGyS6e+2rjAxfHSpBFIOHXqgDceNDqb55+4=
 github.com/logrusorgru/aurora v0.0.0-20180419164547-d694e6f975a9/go.mod h1:7rIyQOR62GCctdiQpZ/zOJlFyk6y+94wXzv6RNZgaR4=
