@@ -1,10 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strings"
 
-	"github.com/c-bata/go-prompt"
 	"github.com/logrusorgru/aurora"
 )
 
@@ -32,10 +33,19 @@ func main() {
 	fmt.Printf("%s v%s-%s (built %s)\n", aurora.Green(AppName), Version, GitCommit, BuildDate)
 	fmt.Printf("Type %s for a list of commands!\n", aurora.Bold("help"))
 	InitCommands()
-	p := prompt.New(executor, completer,
-		prompt.OptionPrefix(PromptText),
-		prompt.OptionTitle(fmt.Sprintf("%s v%s-%s", AppName, Version, GitCommit)))
-	p.Run()
+
+	scanner := bufio.NewScanner(os.Stdin)
+	loop := true
+
+	for loop {
+		fmt.Print(PromptText)
+		if !scanner.Scan() {
+			fmt.Printf("[err] failed to scan: %v\n", scanner.Err())
+		}
+
+		input := scanner.Text()
+		executor(input)
+	}
 }
 
 func executor(in string) {
@@ -43,8 +53,4 @@ func executor(in string) {
 	cmd := arr[0]
 	args := arr[1:]
 	CallCommand(cmd, args)
-}
-
-func completer(_ prompt.Document) []prompt.Suggest {
-	return []prompt.Suggest{}
 }
