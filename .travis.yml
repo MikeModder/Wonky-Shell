@@ -2,12 +2,20 @@ language: go
 go:
 - stable
 env:
+  matrix:
   - GO111MODULE=on
+  global:
+  - secure: NLlQpjs8sZ8kiS+6aGgHs/sWtRkx0jLqsIBMAxve+aqKZ3at8C3UH9AfbpzSgAJQFFZmYi8QGvR9GC2sbTIlLh+jM5w4faVD3WgcCNm9SZ0Qo8b4qn+SW4FwIX6pauvnrY3lavpzdlG4MhFe6dTNo6Y5N1Hv5uIQVuG1JKoMD9PYf7rdAFU7WKNgdILUxGK1JUu9mK6x4uaRmTTdcil9Y84IDMau0lXZNPXYO9+Ifb3y6YE+RBI47Zf4GUbVSHpGfj1GE4OqSMAQfTzM9cd23UtdEOMB59MFpFHRYjRryQhvO4qg5Jt8KoV/zJuB5zAW6ZbXcN1oEsbjrQMEPc6L3/q4+VOZbDlVT4C30tF4i66YDrlGvxnqxkJk1Y2pPfWr8MamlYw+RCwrX2INsMaJrRlfGkijWLmzAt5x20qMUPFdtsRUCfWrjJjOTXe5CX1fRYqGxbzMElsDiBtNNnBGiI7O1hy0WkBr0PKFatSVpbB/K7FakvJwTG7alJco+33frIlaTUTuOPkAyYXuw+8baaP1x8iZC3PKA+areyAw2t00YutfuuDSuzos8Fskn8sDiMKBNIA8GSz+UjDB+bV1V9L4Tax8t6h4HhJzDt4yB7cbN3XFRMRlfSseOzhty3Y4ytDYJeMtkr/3kraprVAvIPTeaiOW+rpLlIl4JoZyXew=
+  - secure: vlljDTI810euGuqSH2/kHrKi3xA3KAfm+79NyIVsNGgTFM3BiZbfWbfl08AlXBPPzXQiqliMd/TDJ7T8bPeqQhwU8/WrEi78PdkJDPBjAjO2KStL+AEiUYxI6LL8kkvE9UjTwo5OVFtPa+NNmBGEPA2kVjzIa4tzMzX7M2Z9DOxH9LFbOPEO/5RbDpHuCNDxVfKeFJ9urspx7sr8k4pBTMHt439TAEPXwVCvfm47smCH0n2Z1+TASEB4riL+In5ZEtX6N08lf+ZZO2zjK8HMxOwroB2BRHgiOrwJIhsN0Kf49hrMzaKoJXI3c6jEcQKmLFrb4aW4JbBMHKf6i1cApPZUvR7RwBmUs08AKOax4fpXg/QnDsukYZFkgyNFenlQeKuUOgKnMXonjSXUSWUpOniXt/ERfj7JEgrDZ1TB6do/3SfLQntGycEn6rLlbUTgneXjzMzHoMsKyZ7RI0SPaUHamZBpD2Fplw1XF07fonY01S5SpyE+KDI0T7BDQWUYRsuI89sT1kUArKrezpJLgulbYl5/3WevLdskjG6tpgzrCBrcqz855FJSYVz0UPHOFdoMCm/oT2QAChMw7ns6kmg7jDoQeafTcM3xzXY2N1VL7JYPcLhqbSCHxu7nIDWHqUw18/nA/Z8uBO0W1X2BBNLgyuclfhELbTWUSe3aEFA=
 before_deploy:
 - upx out/*
 - git config --local user.name "MikeModder"
 - git config --local user.email "oddman56@protonmail.com"
 - git tag "$(cat VERSION)-$(git rev-parse --short HEAD)"
+after_success:
+- echo "{ \"latest\": \"$(cat VERSION)-$(git rev-parse --short HEAD)\", \"commit\": \"$(git rev-parse --short HEAD)\", \"full_commit\": \"$(git rev-parse HEAD)\", \"version\": \"$(cat VERSION)\" }" > index.json
+- curl --ftp-create-dirs -u "$(echo $FTP_USER)@i-hate.science:$(echo $FTP_PASS)" -T 'index.json' "ftp.i-hate.science/"
+- curl --ftp-create-dirs -u "$(echo $FTP_USER)@i-hate.science:$(echo $FTP_PASS)" -T 'out/Wonky-Shell-{win32.exe,win64.exe,mac64,lin32,lin64}' "ftp.i-hate.science/$(cat VERSION)-$(git rev-parse --short HEAD)/"
 deploy:
   provider: releases
   api_key:
