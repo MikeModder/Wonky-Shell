@@ -24,7 +24,7 @@ var (
 
 const (
 	// AppName app's name
-	AppName = "HaxShell"
+	AppName = "Wonky-Shell"
 	// PromptText text to use for promt
 	PromptText = "hax> "
 )
@@ -41,6 +41,7 @@ func main() {
 		fmt.Print(PromptText)
 		if !scanner.Scan() {
 			fmt.Printf("[err] failed to scan: %v\n", scanner.Err())
+			os.Exit(1)
 		}
 
 		input := scanner.Text()
