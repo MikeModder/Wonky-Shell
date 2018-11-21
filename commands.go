@@ -66,6 +66,7 @@ func InitCommands() {
 	Commands["debug"] = &Command{Help: "Print out some debug info", Function: debugCmd}
 	Commands["last"] = &Command{Help: "Check return code of last run command", Function: lastRanCmd}
 	Commands["history"] = &Command{Help: "Get command history for this session", Function: historyCmd}
+	Commands["update"] = &Command{Help: "Check for updates", Function: updateCmd}
 
 	// 1+ argument commands
 	Commands["help"] = &Command{
@@ -327,6 +328,14 @@ func historyCmd(args []string) int {
 	}
 	for _, item := range history {
 		fmt.Printf("| %s | %s | %d |\n", item.Name, strings.Join(item.Args, " "), item.Code)
+	}
+	return 0
+}
+
+func updateCmd(_ []string) int {
+	hasUpdate := checkUpdate()
+	if !hasUpdate {
+		fmt.Println("It looks like you're up to date :)")
 	}
 	return 0
 }
