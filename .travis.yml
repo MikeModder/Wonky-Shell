@@ -13,7 +13,7 @@ before_deploy:
 - git config --local user.email "oddman56@protonmail.com"
 - git tag "$(cat VERSION)-$(git rev-parse --short HEAD)"
 after_success:
-- echo "{ \"latest\": \"$(cat VERSION)-$(git rev-parse --short HEAD)\", \"commit\": \"$(git rev-parse --short HEAD)\", \"full_commit\": \"$(git rev-parse HEAD)\", \"version\": \"$(cat VERSION)\" }" > index.json
+- "echo \"{ \"latest\": \"$(cat VERSION)-$(git rev-parse --short HEAD)\", \"commit\": \"$(git rev-parse --short HEAD)\", \"full_commit\": \"$(git rev-parse HEAD)\", \"version\": \"$(cat VERSION)\" }\" > index.json"
 - curl --ftp-create-dirs -u "$(echo $FTP_USER)@i-hate.science:$(echo $FTP_PASS)" -T 'index.json' "ftp.i-hate.science/"
 - curl --ftp-create-dirs -u "$(echo $FTP_USER)@i-hate.science:$(echo $FTP_PASS)" -T 'out/Wonky-Shell-{win32.exe,win64.exe,mac64,lin32,lin64}' "ftp.i-hate.science/$(cat VERSION)-$(git rev-parse --short HEAD)/"
 deploy:
